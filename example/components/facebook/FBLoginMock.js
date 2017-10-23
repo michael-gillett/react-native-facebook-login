@@ -9,29 +9,30 @@ var {
   Image,
   View,
   TouchableHighlight,
+  ViewPropTypes,
 } = ReactNative;
 
 var FBLoginManager = require('NativeModules').FBLoginManager;
 
 var FBLoginMock = React.createClass({
   propTypes: {
-    style: View.propTypes.style,
+    style: ViewPropTypes.style,
     onPress: PropTypes.func,
     onLogin: PropTypes.func,
     onLogout: PropTypes.func,
   },
 
-  getInitialState: function(){
+  getInitialState: function() {
     return {
       user: null,
     };
   },
 
-  handleLogin: function(){
+  handleLogin: function() {
     var _this = this;
-    FBLoginManager.login(function(error, data){
+    FBLoginManager.login(function(error, data) {
       if (!error) {
-        _this.setState({ user : data});
+        _this.setState({ user: data });
         _this.props.onLogin && _this.props.onLogin();
       } else {
         console.log(error, data);
@@ -39,11 +40,11 @@ var FBLoginMock = React.createClass({
     });
   },
 
-  handleLogout: function(){
+  handleLogout: function() {
     var _this = this;
-    FBLoginManager.logout(function(error, data){
+    FBLoginManager.logout(function(error, data) {
       if (!error) {
-        _this.setState({ user : null});
+        _this.setState({ user: null });
         _this.props.onLogout && _this.props.onLogout();
       } else {
         console.log(error, data);
@@ -51,40 +52,47 @@ var FBLoginMock = React.createClass({
     });
   },
 
-  onPress: function(){
-    this.state.user
-      ? this.handleLogout()
-      : this.handleLogin();
+  onPress: function() {
+    this.state.user ? this.handleLogout() : this.handleLogin();
 
     this.props.onPress && this.props.onPress();
   },
 
-  componentWillMount: function(){
+  componentWillMount: function() {
     var _this = this;
-    FBLoginManager.getCredentials(function(error, data){
+    FBLoginManager.getCredentials(function(error, data) {
       if (!error) {
-        _this.setState({ user : data})
+        _this.setState({ user: data });
       }
     });
   },
 
   render: function() {
-    var text = this.state.user ? "Log out" : "Log in with Facebook";
+    var text = this.state.user ? 'Log out' : 'Log in with Facebook';
     return (
       <View style={this.props.style}>
-        <TouchableHighlight
-          style={styles.container}
-          onPress={this.onPress}
-        >
+        <TouchableHighlight style={styles.container} onPress={this.onPress}>
           <View style={styles.FBLoginButton}>
-            <Image style={styles.FBLogo} source={require('./images/FB-f-Logo__white_144.png')} />
-            <Text style={[styles.FBLoginButtonText, this.state.user ? styles.FBLoginButtonTextLoggedIn : styles.FBLoginButtonTextLoggedOut]}
-              numberOfLines={1}>{text}</Text>
+            <Image
+              style={styles.FBLogo}
+              source={require('./images/FB-f-Logo__white_144.png')}
+            />
+            <Text
+              style={[
+                styles.FBLoginButtonText,
+                this.state.user
+                  ? styles.FBLoginButtonTextLoggedIn
+                  : styles.FBLoginButtonTextLoggedOut,
+              ]}
+              numberOfLines={1}
+            >
+              {text}
+            </Text>
           </View>
         </TouchableHighlight>
       </View>
     );
-  }
+  },
 });
 
 var styles = StyleSheet.create({
@@ -109,12 +117,12 @@ var styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgb(66,93,174)',
 
-    shadowColor: "#000000",
+    shadowColor: '#000000',
     shadowOpacity: 0.8,
     shadowRadius: 2,
     shadowOffset: {
       height: 1,
-      width: 0
+      width: 0,
     },
   },
   FBLoginButtonText: {
